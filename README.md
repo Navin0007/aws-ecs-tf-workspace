@@ -18,15 +18,8 @@
    cd ..
       bash deploy.sh dev
 7. Destroy the workflow
-   bash destroy.sh dev 
-8. Outputs:
+   bash destroy.sh dev
 
-    ecs_cluster_id = "<ECS_CLUSTER_ID>"
-    private_subnet_ids = [
-    "<Private_Subnet_1_ID>",
-    "<Private_Subnet_2_ID>"
-    ]
-    vpc_id = "<VPC_ID>"
     ✅ Deployment successful!
     ✅ ECS infra is now live inside your AWS account!
 
