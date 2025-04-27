@@ -22,7 +22,7 @@ module "vpc" {
 
 module "ecs_cluster" {
   source = "../modules/ecs-cluster"
-  #cluster_name = var.cluster_name
+  #cluster_name = var.cluster_name-
   environment = var.environment
 }
 
