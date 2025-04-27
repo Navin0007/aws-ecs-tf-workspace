@@ -6,4 +6,4 @@ cluster_name   = "dev-ecs-cluster"
 ami_id         = "ami-0d951d7da3cbd55d3"   # Replace with your ECS Optimized AMI ID
 instance_type  = "t3.medium"
 environment    = "dev"
-
+key_name = "terraform-ecs-cluster"

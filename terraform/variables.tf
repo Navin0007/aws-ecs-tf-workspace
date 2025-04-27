@@ -38,3 +38,8 @@ variable "environment" {
   type        = string
 }
 
+variable "key_name" {
+  description = "Name of existing AWS Key Pair"
+  type        = string
+}
+

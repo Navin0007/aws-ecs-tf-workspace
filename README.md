@@ -1,4 +1,5 @@
 # aws-ecs-tf-workspace
+#Terraform code for cluster creation/destroy
 
 #pre-requesites
 
@@ -35,6 +36,7 @@
     IAM Roles | Allow EC2 to register to ECS
 
 🎯 That's your first successful deploy experience!
+
 ✅ Then, you can go to AWS Console ➔ ECS ➔ see your dev-ecs-cluster!
 ✅ Inside EC2 Console ➔ see your ECS nodes launched!
 
