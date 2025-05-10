@@ -7,7 +7,7 @@ if [ -z "$ENV" ]; then
   exit 1
 fi
 
-cd terraform || exit
+cd terraform-ecs || exit
 
 terraform workspace new $ENV || terraform workspace select $ENV
 
