@@ -35,3 +35,13 @@ variable "cluster_name" {
   default     = null
 }
 
+variable "instance_name_suffix" {
+  description = "Custom suffix for the EC2 Name tag (e.g., 'ecs', 'standalone')"
+  type        = string
+  default     = "instance"
+}
+
+variable "iam_instance_profile" {
+  description = "Name of the IAM instance profile"
+  type        = string
+}

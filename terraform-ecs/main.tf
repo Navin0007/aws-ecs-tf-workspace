@@ -28,6 +28,7 @@ module "ecs_cluster" {
 module "iam" {
   source      = "../modules/iam"
   environment = var.environment
+  instance_role_suffix  = "ecs-instance-role"
 }
 
 module "security_groups" {
@@ -44,5 +45,7 @@ module "ec2" {
   subnet_ids    = module.vpc.private_subnet_ids
   environment   = var.environment
   cluster_name  = module.ecs_cluster.cluster_name
+  instance_name_suffix  = "ecs-instance"
+  iam_instance_profile = module.iam.instance_profile_name 
   use_ecs       = true
 }

@@ -9,6 +9,7 @@ override.tf.json
 terraform.tfplan
 terraform.tfstate
 terraform.tfstate.backup
+*.pem
 
 # IDE folders
 .idea/

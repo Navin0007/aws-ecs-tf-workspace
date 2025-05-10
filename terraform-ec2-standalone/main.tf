@@ -31,6 +31,7 @@ module "security_groups" {
 module "iam" {
   source      = "../modules/iam"
   environment = var.environment
+  instance_role_suffix  = "standalone-instance-role" 
 }
 
 module "ec2" {
@@ -40,6 +41,12 @@ module "ec2" {
   key_name      = var.key_name
   subnet_ids    = module.vpc.public_subnet_ids 
   environment   = var.environment
+  instance_name_suffix  = "standalone-instance"
+  iam_instance_profile = module.iam.instance_profile_name 
   use_ecs       = false
   cluster_name  = null
+}
+
+output "ec2_instance_name_tag" {
+  value = module.ec2.instance_name_tag
 }

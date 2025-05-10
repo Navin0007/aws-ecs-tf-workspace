@@ -3,3 +3,7 @@ variable "environment" {
   type        = string
 }
 
+variable "instance_role_suffix" {
+  description = "Suffix to customize IAM role name"
+  type        = string
+}

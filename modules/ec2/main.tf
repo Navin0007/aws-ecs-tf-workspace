@@ -3,6 +3,13 @@ resource "aws_launch_template" "ecs" {
   image_id      = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
+  lifecycle {
+    create_before_destroy = true 
+  }
+  iam_instance_profile {
+    name = var.iam_instance_profile
+  }
+
 
   user_data = var.use_ecs ? base64encode(<<-EOF
               #!/bin/bash
@@ -13,7 +20,7 @@ resource "aws_launch_template" "ecs" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name        = "${var.environment}-instance"
+      Name        = "${var.environment}-${var.instance_name_suffix}"
       Environment = var.environment
     }
   }
@@ -32,7 +39,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
   tag {
     key                 = "Name"
-    value               = "${var.environment}-instance"
+    value               = "${var.environment}-${var.instance_name_suffix}"
     propagate_at_launch = true
   }
 
@@ -93,4 +100,25 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.ecs_asg.name
   }
+}
+
+
+output "launch_template_name" {
+  description = "Name of the EC2 launch template"
+  value       = aws_launch_template.ecs.name
+}
+
+output "launch_template_id" {
+  description = "ID of the EC2 launch template"
+  value       = aws_launch_template.ecs.id
+}
+
+output "autoscaling_group_name" {
+  description = "Name of the Auto Scaling Group"
+  value       = aws_autoscaling_group.ecs_asg.name
+}
+
+output "instance_name_tag" {
+  description = "The resolved Name tag applied to EC2 instances"
+  value       = "${var.environment}-${var.instance_name_suffix}"
 }
