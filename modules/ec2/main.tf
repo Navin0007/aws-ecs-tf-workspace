@@ -1,19 +1,19 @@
 resource "aws_launch_template" "ecs" {
-  name_prefix   = "${var.environment}-ecs-launch-template"
+  name_prefix   = "${var.environment}-launch-template"
   image_id      = var.ami_id
   instance_type = var.instance_type
-  key_name = var.key_name
+  key_name      = var.key_name
 
-  user_data = base64encode(<<-EOF
+  user_data = var.use_ecs ? base64encode(<<-EOF
               #!/bin/bash
               echo ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config
               EOF
-            )
+            ) : null
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name        = "${var.environment}-ecs-instance"
+      Name        = "${var.environment}-instance"
       Environment = var.environment
     }
   }
@@ -32,7 +32,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
   tag {
     key                 = "Name"
-    value               = "${var.environment}-ecs-instance"
+    value               = "${var.environment}-instance"
     propagate_at_launch = true
   }
 
@@ -44,6 +44,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
 }
 
 resource "aws_autoscaling_policy" "scale_out" {
+  count                  = var.use_ecs ? 1 : 0
   name                   = "${var.environment}-scale-out"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
@@ -52,6 +53,7 @@ resource "aws_autoscaling_policy" "scale_out" {
 }
 
 resource "aws_autoscaling_policy" "scale_in" {
+  count                  = var.use_ecs ? 1 : 0
   name                   = "${var.environment}-scale-in"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
@@ -60,32 +62,34 @@ resource "aws_autoscaling_policy" "scale_in" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+  count               = var.use_ecs ? 1 : 0
   alarm_name          = "${var.environment}-high-cpu"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "2"
+  evaluation_periods  = 2
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "120"
+  period              = 120
   statistic           = "Average"
-  threshold           = "70"
+  threshold           = 70
+  alarm_actions       = [aws_autoscaling_policy.scale_out[0].arn]
 
-  alarm_actions       = [aws_autoscaling_policy.scale_out.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.ecs_asg.name
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "low_cpu" {
+  count               = var.use_ecs ? 1 : 0
   alarm_name          = "${var.environment}-low-cpu"
   comparison_operator = "LessThanThreshold"
-  evaluation_periods  = "2"
+  evaluation_periods  = 2
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "120"
+  period              = 120
   statistic           = "Average"
-  threshold           = "30"
+  threshold           = 30
+  alarm_actions       = [aws_autoscaling_policy.scale_in[0].arn]
 
-  alarm_actions       = [aws_autoscaling_policy.scale_in.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.ecs_asg.name
   }

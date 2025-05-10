@@ -31,15 +31,19 @@ resource "aws_subnet" "private" {
 
 data "aws_availability_zones" "available" {}
 
+
 output "vpc_id" {
   value = aws_vpc.this.id
 }
 
-output "public_subnet_ids" {
-  value = aws_subnet.public[*].id
-}
+/*output "public_subnet_ids" {
+  value = module.vpc.public_subnet_ids
+}*/
 
 output "private_subnet_ids" {
   value = aws_subnet.private[*].id
 }
 
+output "public_subnet_ids" {
+  value = aws_subnet.public[*].id        # ✅ correct reference to internal resource
+}

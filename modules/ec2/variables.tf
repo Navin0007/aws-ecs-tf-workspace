@@ -1,20 +1,15 @@
 variable "subnet_ids" {
-  description = "Subnet IDs where ECS instances will run"
+  description = "Subnet IDs where EC2 instances will launch"
   type        = list(string)
 }
 
-variable "cluster_name" {
-  description = "ECS Cluster name to join"
-  type        = string
-}
-
 variable "ami_id" {
-  description = "AMI ID for ECS EC2 instances"
+  description = "AMI ID for EC2 instances"
   type        = string
 }
 
 variable "instance_type" {
-  description = "EC2 Instance type for ECS nodes"
+  description = "EC2 Instance type"
   type        = string
 }
 
@@ -28,4 +23,15 @@ variable "key_name" {
   type        = string
 }
 
+variable "use_ecs" {
+  description = "Whether to configure EC2 instances for ECS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_name" {
+  description = "ECS Cluster name to join (used only if use_ecs = true)"
+  type        = string
+  default     = null
+}
 
